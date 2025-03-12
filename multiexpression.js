@@ -13,27 +13,7 @@ let btn = document.querySelectorAll(".btn");
 let firstNo = null;
 let secondNo = "";
 let operator = null;
-let expression = "";
 let isNewCalculation = false;
-
-function calcResult(firstNo, secondNo, operator) {
-  switch (operator) {
-    case '±':
-      return firstNo + secondNo;
-    case '%':
-      return firstNo % secondNo;
-    case '÷':
-      return secondNo === 0 ? "Error" : firstNo / secondNo;
-    case '×':
-      return firstNo * secondNo;
-    case '−':
-      return firstNo - secondNo;
-    case '+':
-      return firstNo + secondNo;
-    default:
-      return NaN;
-  }
-}
 
 btn.forEach(btn => {
   btn.addEventListener("click", function () {
@@ -44,70 +24,76 @@ btn.forEach(btn => {
       firstNo = null;
       secondNo = "";
       operator = null;
-      expression = "";
       isNewCalculation = false;
     } 
     
     else if (btnValue === "=") {
       if (firstNo !== null && secondNo !== "" && operator) {
-        let result = calcResult(Number(firstNo), Number(secondNo), operator);
+        let result = calculate(Number(firstNo), Number(secondNo), operator);
         display.innerHTML = result;
         firstNo = result;
         secondNo = "";
         operator = null;
-        expression = result.toString();
         isNewCalculation = true;
       }
     } 
 
     else if (btnValue === "%") {
       if (operator && firstNo !== null && secondNo !== "") {
-        // If % is pressed after an operator, calculate percentage of firstNo
-        secondNo = (Number(firstNo) * Number(secondNo)) / 100;
-        display.innerHTML = secondNo;
+        // Convert secondNo to a percentage of firstNo
+        secondNo = (Number(secondNo) / 100) * Number(firstNo);
       } 
       else if (firstNo !== null && operator === null) {
-        // If % is pressed for a single number, convert to its percentage value
+        // Convert a single number to a percentage
         firstNo = Number(firstNo) / 100;
         display.innerHTML = firstNo;
+        return; // Avoid further processing
       }
+      display.innerHTML = firstNo + " " + operator + " " + secondNo;
     }
-    
+
     else if (btn.classList.contains('operator')) {
       if (isNewCalculation) {
         isNewCalculation = false;
       }
-      
+
       if (firstNo === null) {
         firstNo = Number(display.innerHTML);
       } 
       
       if (secondNo !== "") {
-        firstNo = calcResult(Number(firstNo), Number(secondNo), operator);
+        firstNo = calculate(Number(firstNo), Number(secondNo), operator);
         display.innerHTML = firstNo;
         secondNo = "";
       }
       
       operator = btnValue;
-      expression += btnValue;
-      display.innerHTML = expression;
+      display.innerHTML = firstNo + " " + operator;
     } 
     
     else { // Handling number input
       if (isNewCalculation) {
-        expression = btnValue;
+        firstNo = btnValue;
         isNewCalculation = false;
-      } else {
-        expression += btnValue;
-      }
-
-      if (operator === null) {
-        firstNo = Number(expression);
-      } else {
+      } 
+      else if (operator === null) {
+        firstNo = (firstNo || "") + btnValue;
+      } 
+      else {
         secondNo += btnValue;
       }
       
-      display.innerHTML = expression;
+      display.innerHTML = firstNo + (operator ? " " + operator + " " + secondNo : "");
     }
   });
 });
+
+function calculate(a, b, op) {
+  switch (op) {
+    case '÷': return b === 0 ? "Error" : a / b;
+    case '×': return a * b;
+    case '−': return a - b;
+    case '+': return a + b;
+    default: return NaN;
+  }
+}
