@@ -21,7 +21,7 @@ function calcResult(firstNo, secondNo, operator) {
     case '±':
       return firstNo + secondNo;
     case '%':
-      return firstNo * (secondNo / 100); // Percentage logic
+      return firstNo % secondNo;
     case '÷':
       return secondNo === 0 ? "Error" : firstNo / secondNo;
     case '×':
@@ -59,15 +59,17 @@ btn.forEach(btn => {
         isNewCalculation = true;
       }
     } 
-    
+
     else if (btnValue === "%") {
-      if (firstNo !== null && secondNo === "") {
-        secondNo = firstNo; // If only one number is present, assume it as base
-      }
-      
-      if (firstNo !== null && secondNo !== "" && operator) {
-        secondNo = calcResult(Number(firstNo), Number(secondNo), "%");
+      if (operator && firstNo !== null && secondNo !== "") {
+        // If % is pressed after an operator, calculate percentage of firstNo
+        secondNo = (Number(firstNo) * Number(secondNo)) / 100;
         display.innerHTML = secondNo;
+      } 
+      else if (firstNo !== null && operator === null) {
+        // If % is pressed for a single number, convert to its percentage value
+        firstNo = Number(firstNo) / 100;
+        display.innerHTML = firstNo;
       }
     }
     
