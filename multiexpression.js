@@ -30,7 +30,7 @@ btn.forEach(btn => {
     else if (btnValue === "=") {
       if (firstNo !== null && secondNo !== "" && operator) {
         let result = calculate(Number(firstNo), Number(secondNo), operator);
-        display.innerHTML = result;
+        display.innerHTML = formatResult(result);
         firstNo = result;
         secondNo = "";
         operator = null;
@@ -40,14 +40,12 @@ btn.forEach(btn => {
 
     else if (btnValue === "%") {
       if (operator && firstNo !== null && secondNo !== "") {
-        // Convert secondNo to a percentage of firstNo
         secondNo = (Number(secondNo) / 100) * Number(firstNo);
       } 
       else if (firstNo !== null && operator === null) {
-        // Convert a single number to a percentage
         firstNo = Number(firstNo) / 100;
-        display.innerHTML = firstNo;
-        return; // Avoid further processing
+        display.innerHTML = formatResult(firstNo);
+        return; 
       }
       display.innerHTML = firstNo + " " + operator + " " + secondNo;
     }
@@ -63,7 +61,7 @@ btn.forEach(btn => {
       
       if (secondNo !== "") {
         firstNo = calculate(Number(firstNo), Number(secondNo), operator);
-        display.innerHTML = firstNo;
+        display.innerHTML = formatResult(firstNo);
         secondNo = "";
       }
       
@@ -71,7 +69,7 @@ btn.forEach(btn => {
       display.innerHTML = firstNo + " " + operator;
     } 
     
-    else { // Handling number input
+    else { 
       if (isNewCalculation) {
         firstNo = btnValue;
         isNewCalculation = false;
@@ -96,4 +94,9 @@ function calculate(a, b, op) {
     case '+': return a + b;
     default: return NaN;
   }
+}
+
+
+function formatResult(result) {
+  return Number(result.toFixed(2));
 }
