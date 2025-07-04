@@ -60,7 +60,7 @@ btn.forEach(btn => {
 
         else if(btnValue == "="){
             // console.log(firstNo);
-            
+              
             display.innerHTML = calcResult(Number(firstNo), Number(secondNo), operator);
             firstNo = display.innerHTML;
             secondNo = 0;
