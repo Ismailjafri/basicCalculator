@@ -91,7 +91,7 @@ function calculate(a, b, op) {
     case '÷': return b === 0 ? "Error" : a / b;
     case '×': return a * b;
     case '−': return a - b;
-    case '+': return a + b;
+    case '+': return a + b; // will needed work
     default: return NaN;
   }
 }
